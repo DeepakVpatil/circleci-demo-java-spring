@@ -83,7 +83,7 @@ jobs:
       - store_artifacts:
           path: build/libs
           
-deploy:
+  deploy:
     machine:
         enabled: true
     working_directory: ~/circleci-demo-java-spring
@@ -110,6 +110,9 @@ workflows:
     - test:
         requires:
           - build
-        filters:
+    - deploy:
+          requires:
+            - build
+          filters:
             branches:
               only: sequential-branch-filter
