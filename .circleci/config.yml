@@ -82,7 +82,24 @@ jobs:
       # This will be empty for all nodes except the first one
       - store_artifacts:
           path: build/libs
+          
+  deploy:
+    machine:
+        enabled: true
+    working_directory: ~/circleci-demo-java-spring
+    environment:
+      HEROKU_APP: "xtaas-ci-cd"
+    steps:
+      - checkout
+      - run:
+          name: Setup Heroku
+          command: bash .circleci/setup-heroku.sh
 
+      - run:
+          command: |
+            git push https://heroku:$HEROKU_API_KEY@git.heroku.com/$HEROKU_APP.git $CIRCLE_BRANCH:demo
+            sleep 5 # sleep for 5 seconds to wait for dynos
+            heroku restart
 workflows:
   version: 2
   workflow:
@@ -91,3 +108,7 @@ workflows:
     - test:
         requires:
           - build
+    - deploy:
+          requires:
+            - build
+            - test
