@@ -97,7 +97,7 @@ jobs:
 
       - run:
           command: |
-            git push heroku sequential-branch-filter:demo
+            git push heroku demo
             heroku run rake db:migrate
             sleep 5 # sleep for 5 seconds to wait for dynos
             heroku restart
@@ -113,6 +113,4 @@ workflows:
     - deploy:
           requires:
             - build
-          filters:
-            branches:
-              only: sequential-branch-filter
+          
